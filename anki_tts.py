@@ -70,6 +70,10 @@ def generate_audio(text: str, output_path: str) -> bool:
         region=AZURE_SPEECH_REGION
     )
     speech_config.speech_synthesis_voice_name = VOICE_NAME
+    # Use 48kHz 192kbps MP3 — widely compatible including iOS AVAudioPlayer
+    speech_config.set_speech_synthesis_output_format(
+        speechsdk.SpeechSynthesisOutputFormat.Audio48Khz192KBitRateMonoMp3
+    )
 
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
     synthesizer = speechsdk.SpeechSynthesizer(
