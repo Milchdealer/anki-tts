@@ -16,6 +16,9 @@ import os
 import re
 import sys
 import hashlib
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 
@@ -49,6 +52,25 @@ FIELD_FULL_SOLUTION = 6
 FIELD_AUDIO         = 8
 TOTAL_FIELDS        = 10
 # ────────────────────────────────────────────────────────────────────────────
+
+HAVE_FFMPEG = shutil.which("ffmpeg") is not None
+
+
+def _reencode_mp3(path: str) -> None:
+    """Re-encode MP3 to 44.1kHz 128kbps via ffmpeg (required for iOS Anki).
+    Azure SDK outputs 48kHz raw MPEG frames; iOS rejects both the sample rate
+    and the missing ID3 headers."""
+    tmp_fd, tmp_path = tempfile.mkstemp(suffix=".mp3")
+    os.close(tmp_fd)
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", path, "-ar", "44100", "-ab", "128k", "-ac", "1", tmp_path],
+            capture_output=True, check=True,
+        )
+        shutil.move(tmp_path, path)
+    except subprocess.CalledProcessError:
+        os.unlink(tmp_path)
+        print("  WARNING: ffmpeg re-encode failed, mp3 may not work on iOS")
 
 
 def strip_html(text: str) -> str:
@@ -84,6 +106,8 @@ def generate_audio(text: str, output_path: str) -> bool:
     result = synthesizer.speak_text_async(text).get()
 
     if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
+        if HAVE_FFMPEG:
+            _reencode_mp3(output_path)
         return True
     else:
         cancellation = result.cancellation_details
