@@ -161,6 +161,13 @@ def process_file(input_path: str, output_folder: str):
         mp3_name = f"anki_tts_{hash_id}.mp3"
         mp3_path = os.path.join(output_folder, mp3_name)
 
+        # Skip TTS if mp3 already exists on disk (idempotent re-runs)
+        if os.path.exists(mp3_path):
+            fields[FIELD_AUDIO] = f"[sound:{mp3_name}]"
+            already_done += 1
+            updated_lines.append("\t".join(fields) + "\n")
+            continue
+
         print(f"  Generating: {clean_text[:50]}...")
 
         if generate_audio(clean_text, mp3_path):

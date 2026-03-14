@@ -65,7 +65,7 @@ OUTPUT_FOLDER=your output folder
 2. Set **Export format** to **Notes in Plain Text (.txt)**
 3. Set **Include** to the deck you want to add audio to
 4. ✅ Check **"Include unique identifier"** — this is critical, it allows Anki to match rows back to existing cards on re-import instead of creating duplicates
-5. ❌ Uncheck **"Include HTML and media references"**
+5. ✅ Check **"Include HTML and media references"** — this preserves `[sound:...]` tags so the script can detect cards that already have audio and skip them
 6. Click **Export** and save the file into your `INPUT_FOLDER`
 
 ### Step 2 — Run the script
@@ -107,7 +107,7 @@ Copy all `.mp3` files from `OUTPUT_FOLDER` into the media folder above.
 
 ## Notes
 
-- **Idempotent** — cards that already have audio in the Audio field are skipped. Safe to re-run.
+- **Idempotent** — cards are skipped if the Audio field already contains a `[sound:...]` reference, or if the mp3 file already exists in the output folder. Safe to re-run.
 - **No duplicates** — the unique identifier from the export ensures existing cards are updated, not duplicated.
 - **Stable filenames** — MP3s are named by a hash of the sentence text, so the same sentence always produces the same file.
 - **HTML stripped** — any HTML tags in the Full-Solution field are removed before sending to Azure.

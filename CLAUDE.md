@@ -35,6 +35,6 @@ All config via `.env` (copy from `.env.example`):
 
 - **Field mapping is hardcoded**: `anki_tts.py` expects a specific tab-separated field order (10 fields). `FIELD_FULL_SOLUTION=6` and `FIELD_AUDIO=8` are constants at the top of the file. Adjust these if the note type changes.
 - **Stable filenames via content hash**: MP3s are named `anki_tts_{md5[:10]}.mp3` from the text content, making the process idempotent — same text always produces the same filename.
-- **Idempotent**: Cards with existing audio in the Audio field are skipped on re-run.
+- **Idempotent**: Cards are skipped if the Audio field contains `[sound:...]` or if the mp3 already exists in the output folder.
 - **ffmpeg for iOS compatibility**: Azure SDK outputs 48kHz raw MPEG frames without ID3 headers. iOS AnkiMobile rejects both the sample rate and missing headers. `anki_tts.py` auto-detects ffmpeg and re-encodes to 44.1kHz 128kbps mono. ffmpeg is optional but required for iOS playback.
 - **No external dependencies beyond Azure SDK + ffmpeg**: The `.env` loader is hand-rolled to avoid extra deps.
