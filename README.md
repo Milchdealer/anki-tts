@@ -80,13 +80,22 @@ The script will generate one `.mp3` per card and write an updated `.txt` with th
 
 ### Step 3 — Copy MP3s to Anki media folder
 
+Use the included helper script to copy the generated files into Anki's media folder:
+
+```bash
+python3 copy_to_anki.py --profile "User 1"        # replace with your profile name
+python3 copy_to_anki.py --profile "User 1" --dry-run  # preview without copying
+```
+
+The script auto-detects the correct media path on macOS, Linux, and Windows. If the profile name is wrong, it will print the available profiles. Files already present with the same size are skipped.
+
+Manual paths if you prefer to copy by hand:
+
 | Platform | Path |
 |----------|------|
 | Mac      | `~/Library/Application Support/Anki2/<Profile>/collection.media/` |
 | Windows  | `%APPDATA%\Anki2\<Profile>\collection.media\` |
 | Linux    | `~/.local/share/Anki2/<Profile>/collection.media/` |
-
-Copy all `.mp3` files from `OUTPUT_FOLDER` into the media folder above.
 
 ### Step 4 — Import back into Anki
 
