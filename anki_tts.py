@@ -41,7 +41,7 @@ load_env()  # loads .env from current working directory
 AZURE_SPEECH_KEY    = os.environ.get("AZURE_SPEECH_KEY", "")
 AZURE_SPEECH_REGION = os.environ.get("AZURE_SPEECH_REGION", "")
 
-INPUT_FOLDER  = os.environ.get("INPUT_FODLER", "input")         # folder with .txt card files
+INPUT_FOLDER  = os.environ.get("INPUT_FOLDER", "input")         # folder with .txt card files
 OUTPUT_FOLDER = os.environ.get("OUTPUT_FOLDER", "output")  # where updated .txt + mp3s go
 
 VOICE_NAME = os.environ.get("VOICE_NAME", "ja-JP-KeitaNeural")
